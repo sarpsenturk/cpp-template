@@ -11,6 +11,8 @@ Checks:
   performance-*
   portability-*
   readability-*
+  -readability-uppercase-literal-suffix
+  -hicpp-uppercase-literal-suffix
 
 
 CheckOptions:
