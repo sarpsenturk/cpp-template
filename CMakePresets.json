@@ -7,71 +7,79 @@
   },
   "configurePresets": [
     {
-      "name": "default-conf",
+      "name": "base",
+      "hidden": true,
       "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
       "vendor": {
-        "microsoft.com/VisualStudioSettings/CMake": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
           "enableClangTidyCodeAnalysis": true
         }
       },
-      "displayName": "Default",
-      "description": "Default configuration",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
-      "installDir": "${sourceDir}/build/${presetName}/install",
+      "installDir": "${sourceDir}/build/${presetName}/install"
+    },
+    {
+      "name": "debug",
+      "hidden": true,
       "cacheVariables": {
-        "VCPKG_LIBRARY_LINKAGE": "static"
+        "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
-      "name": "msvc",
+      "name": "release",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "dist",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "win32-base",
+      "hidden": true,
       "inherits": [
-        "default-conf"
+        "base"
       ],
+      "vendor": {
+        "microsoft.com/VisualStudioSettings/CMake/1.0": {
+          "hostOS": "Windows"
+        }
+      },
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
         "rhs": "Windows"
       },
-      "displayName": "MSVC",
-      "description": "Microsoft Visual C++ compiler",
       "cacheVariables": {
         "CMAKE_CXX_COMPILER": "cl",
         "CMAKE_C_COMPILER": "cl",
-        "CMAKE_CXX_FLAGS": "/permissive- /W4 /external:anglebrackets /external:W0 /EHs",
+        "CMAKE_CXX_FLAGS": "/permissive- /W4 /external:anglebrackets /external:W0 /EHsc",
         "CXX_SANITIZE_ADDRESS": "/fsanitize=address",
-        "CXX_SANITIZE_UNDEFINED": "/fsanitize=undefined"
+        "CXX_SANITIZE_UNDEFINED": "",
+        "ORION_PLATFORM": "Windows",
+        "ORION_PLATFORM_WINDOWS": true
       }
     },
     {
-      "name": "gcc",
-      "inherits": [
-        "default-conf"
-      ],
-      "displayName": "GCC",
-      "description": "GCC compiler",
-      "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "gcc",
-        "CMAKE_C_COMPILER": "gcc",
-        "CMAKE_CXX_FLAGS": "-Wall -Wextra -Wshadow -Wconversion -Wsign-conversion -Wnon-virtual-dtor -pedantic",
-        "CXX_SANITIZE_ADDRESS": "-fsanitize=address",
-        "CXX_SANITIZE_UNDEFINED": "-fsanitize=undefined"
-      }
+      "name": "win32-debug",
+      "displayName": "Win32 Debug",
+      "inherits": ["win32-base", "debug"]
     },
     {
-      "name": "clang",
-      "inherits": [
-        "default-conf"
-      ],
-      "displayName": "Clang",
-      "description": "Clang compiler",
-      "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "clang",
-        "CMAKE_C_COMPILER": "clang",
-        "CMAKE_CXX_FLAGS": "-Wall -Wextra -Wshadow -Wconversion -Wsign-conversion -Wlifetime -Wnon-virtual-dtor -pedantic",
-        "CXX_SANITIZE_ADDRESS": "-fsanitize=address",
-        "CXX_SANITIZE_UNDEFINED": "-fsanitize=undefined"
-      }
+      "name": "win32-release",
+      "displayName": "Win32 Release",
+      "inherits": ["win32-base", "release"]
+    },
+    {
+      "name": "win32-dist",
+      "displayName": "Win32 Distribution",
+      "inherits": ["win32-base", "dist"]
     }
   ]
 }
